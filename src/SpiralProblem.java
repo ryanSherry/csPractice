@@ -15,45 +15,55 @@ public class SpiralProblem {
         }
     }
 
-        public void printArray(int counter, int rowStart, int rowEnd, int colStart, int colEnd){
+        public void printArray(int counter, int start, int finish){
 
         if (counter == numCol * numRows) {
             return;
         }
 
-//        int rowStart = 0;
-//        int rowEnd = numRows;
-//        int colStart = 0;
-//        int colEnd = numCol;
-
-
-            for(int i = colStart; i < colEnd; i++) {
-                System.out.print(data[rowStart][i]);
+            for(int i = start; i < finish; i++) {
+                if(counter == numCol * numRows - 1) {
+                    System.out.print(data[start][i]);
+                } else {
+                    System.out.print(data[start][i] + ", ");
+                }
                 counter++;
             }
 
 
-            for(int i = rowStart+1; i < rowEnd; i++) {
-                System.out.print(data[i][rowEnd - 1]);
+            for(int i = start+1; i < finish; i++) {
+                if(counter == numCol * numRows - 1) {
+                    System.out.print(data[i][finish - 1]);
+                } else {
+                    System.out.print(data[i][finish - 1] + ", ");
+                }
                 counter++;
             }
 
-            for(int i = colEnd - 1 - 1; i >= colStart; i--) {
-                System.out.print(data[rowEnd - 1][i]);
+            for(int i = finish - 1 - 1; i >= start; i--) {
+                if(counter == numCol * numRows - 1) {
+                    System.out.print(data[finish - 1][i]);
+                } else {
+                    System.out.print(data[finish - 1][i] + ", ");
+                }
                 counter++;
             }
 
-            for(int i = rowEnd - 1 - 1; i > rowStart; i--) {
-                System.out.print(data[i][colStart]);
+            for(int i = finish - 1 - 1; i > start; i--) {
+                if (counter == numCol * numRows - 1) {
+                    System.out.print(data[i][start]);
+                } else {
+                    System.out.print(data[i][start] + ", ");
+                }
                 counter++;
             }
 
-            printArray(counter,rowStart + 1, rowEnd - 1, colStart + 1, colEnd - 1);
+            printArray(counter,start + 1, finish - 1);
         }
 
         public static void main(String[] args) {
             SpiralProblem spiralProblem = new SpiralProblem(4,4);
-            spiralProblem.printArray(0, 0, 4, 0, 4);
+            spiralProblem.printArray(0, 0, 4);
         }
 
 }
