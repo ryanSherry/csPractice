@@ -42,13 +42,13 @@ public class LinkedList<T> {
         } else {
             Node tmp = tail;
             tmp.next = itemToAdd;
+            itemCount++;
 
-            if (itemCount > 1) {
+            if (itemCount > 2) {
                 previousTail = tail;
             }
 
             tail = tmp.next;
-            itemCount++;
         }
     }
 
@@ -67,6 +67,11 @@ public class LinkedList<T> {
             itemToPop = head;
             head = head.next;
             itemCount--;
+
+            if (itemCount < 3) {
+                previousTail = null;
+            }
+
             System.out.println(itemToPop.data);
         }
         return itemToPop;
@@ -88,6 +93,9 @@ public class LinkedList<T> {
             itemToPop = tail;
             tail = previousTail;
             itemCount--;
+            if (itemCount < 3) {
+                previousTail = null;
+            }
 
             System.out.println(itemToPop.data);
         }
@@ -96,9 +104,24 @@ public class LinkedList<T> {
 
     public void printLinkedList() {
         Node tmp = head;
+        String separator = ", ";
         while (tmp != null) {
-            System.out.println(tmp.data + ",");
+
+            if (tmp.equals(tail)) {
+                separator = "";
+            }
+
+            System.out.print(tmp.data + separator);
             tmp = tmp.next;
+        }
+        System.out.println(" ");
+    }
+
+    private void printNode(Node node) {
+        if (node == null) {
+            System.out.println("This node is null, can't print data");
+        } else {
+            System.out.println(node.data);
         }
     }
 
@@ -107,5 +130,36 @@ public class LinkedList<T> {
         linkedList.addHead(1);
         linkedList.addHead(2);
         linkedList.addHead(3);
+        linkedList.printLinkedList();
+        linkedList.addTail(5);
+        linkedList.addTail(6);
+        linkedList.addTail(7);
+        linkedList.printLinkedList();
+        System.out.println(linkedList.itemCount);
+        linkedList.popHead();
+        linkedList.popHead();
+        linkedList.popHead();
+        linkedList.printLinkedList();
+        System.out.println(linkedList.itemCount);
+        linkedList.popHead();
+        linkedList.popHead();
+        linkedList.popHead();
+        linkedList.printLinkedList();
+        linkedList.popHead();
+        System.out.println(linkedList.itemCount);
+        linkedList.printNode(linkedList.previousTail);
+        linkedList.addTail(10);
+        linkedList.printNode(linkedList.head);
+        linkedList.printNode(linkedList.tail);
+        linkedList.printNode(linkedList.previousTail);
+        linkedList.addTail(11);
+        linkedList.printNode(linkedList.tail);
+        linkedList.printNode(linkedList.previousTail);
+        linkedList.addTail(12);
+        linkedList.printNode(linkedList.tail);
+        linkedList.printNode(linkedList.previousTail);
+        linkedList.printLinkedList();
+        linkedList.popTail();
+        linkedList.printNode(linkedList.previousTail);
     }
 }
