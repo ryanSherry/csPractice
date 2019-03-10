@@ -1,175 +1,201 @@
-import java.lang.reflect.Array;
-
 public class ArrayDeque<T> {
-    private Object[] array;
-    int headIndex;
-    int tailIndex;
+    private Object[] headArray;
+    private Object[] tailArray;
+    private int headIndex;
+    private int tailIndex;
+    private Object head;
+    private Object tail;
 
     public ArrayDeque() {
-        array = new Object[16];
+        headArray = new Object[8];
+        tailArray = new Object[8];
         headIndex = 0;
-        tailIndex = array.length - 1;
+        tailIndex = 0;
     }
 
-    public void addAtHeadIndex(T item) {
-        checkArrayForResize(array);
-        array[headIndex] = item;
-        headIndex++;
-    }
+    private Object[] checkArrayResize(Object[] a) {
 
-    public Object popAtHeadIndex() {
-        Object itemToPop = array[headIndex];
-        array[headIndex] = null;
-        headIndex--;
-        checkArrayForResize(array);
-        return itemToPop;
+        int newArraySizeBigger = a.length * 2;
+        int newArraySizeSmaller = a.length / 2;
+        int quarterSize = a.length / 4;
+
+        if(a[a.length-1] != null) {
+            Object[] aTemp = new Object[newArraySizeBigger];
+
+            System.arraycopy(a, 0, aTemp, 0, a.length);
+
+            return aTemp;
+
+        } else if(a[quarterSize - 1] != null && a[quarterSize] == null) {
+            Object[] aTemp = new Object[newArraySizeSmaller];
+
+            System.arraycopy(a, 0, aTemp, 0, a.length);
+
+            return aTemp;
+        }
+
+        else {
+
+//            System.out.println("Array not ready to be resized");
+            return a;
+
+        }
     }
 
     public void addHead(T item) {
-        checkArrayForResize(array);
-        bumpUpArrayHead(array, item);
-        headIndex++;
-    }
+        //will only resize if needs to, otherwise assigns current value to self and there is no change
+        headArray = checkArrayResize(headArray);
 
-    public Object popHead() {
-        Object itemToPop = array[0];
-        bumpDownArrayHead(array);
-        return itemToPop;
+        headArray[headIndex] = item;
+        headIndex++;
     }
 
     public void addTail(T item) {
-        checkArrayForResize(array);
-        bumpUpArrayTail(array, item);
-        tailIndex--;
+        tailArray = checkArrayResize(tailArray);
+
+        tailArray[tailIndex] = item;
+        tailIndex++;
+    }
+
+    public Object popHead() {
+        if (tailIndex == 0 && headIndex == 0) {
+            System.out.println("Nothing to pop, Deque is empty");
+            return null;
+        } else if (headIndex == 0) {
+
+            Object itemToPop = tailArray[0];
+
+            Object[] tempArray = new Object[tailArray.length];
+
+            for (int i = 0; i < tailArray.length - 1; i++) {
+                tempArray[i] = tailArray[i+1];
+            }
+
+            tailArray = tempArray;
+            tailIndex--;
+
+            return itemToPop;
+        } else {
+            Object itemToPop = headArray[headIndex - 1];
+            headArray[headIndex - 1] = null;
+            headIndex --;
+            return itemToPop;
+        }
     }
 
     public Object popTail() {
-        Object itemToPop = array[array.length - 1];
-        bumpDownArrayTail(array);
-        tailIndex++;
-        return itemToPop;
-    }
+        if (tailIndex == 0 && headIndex == 0) {
+            System.out.println("Nothing to pop, Deque is empty");
+            return null;
+        } else if (tailIndex == 0) {
 
-    public void addAtTailIndex(T item) {
-        checkArrayForResize(array);
-        array[tailIndex] = item;
-        tailIndex--;
-    }
+            Object itemToPop = headArray[0];
 
-    public Object peakFirst() {
-        return array[0];
-    }
+            Object[] tempArray = new Object[headArray.length];
 
-    public Object peakLast() {
-        return array[array.length - 1];
-    }
+            for (int i = 0; i < headArray.length - 1; i++) {
+                tempArray[i] = headArray[i+1];
+            }
 
-    public void checkArrayForResize(Object[] a) {
-        int tailIndexDiff = array.length - 1 - tailIndex;
-        int indexSum = tailIndexDiff + headIndex;
-        resizeArray(indexSum);
-    }
+            headArray = tempArray;
+            headIndex--;
 
-    private void resizeArray(int indexSum) {
-        int newSize = 0;
-        Object[] arrayTemp = new Object[0];
-
-        if (indexSum == array.length) {
-            System.out.println("ArrayDeque is full, resizing");
-            newSize = 2 * array.length;
-            arrayTemp = new Object[newSize];
-        } else if (indexSum == array.length/4) {
-            System.out.println("ArrayDeque can be reduced, resizing");
-            newSize = array.length / 2;
-            arrayTemp = new Object[newSize];
-        }
-        if(arrayTemp.length != 0) {
-            copyArray(arrayTemp);
+            return itemToPop;
+        } else {
+            Object itemToPop = tailArray[tailIndex - 1];
+            tailArray[tailIndex - 1] = null;
+            tailIndex--;
+            return itemToPop;
         }
     }
 
-    private void copyArray(Object[] arrayTemp) {
-        for (int i = 0; i < headIndex; i++) {
-            arrayTemp[i] = array[i];
-        }
-
-        for (int i = tailIndex; i < array.length; i++) {
-            arrayTemp[i] = array[i];
-        }
-        array = arrayTemp;
-    }
-
-    private void bumpUpArrayHead(Object[] a, T item) {
-
-        Object[] tempArray = new Object[a.length+1];
-        tempArray[0] = item;
-        for(int i = 0; i < a.length; i++) {
-            tempArray[i+1] = a[i];
-        }
-        headIndex++;
-        array = tempArray;
-    }
-
-    private void bumpDownArrayHead(Object[] a) {
-        Object[] tempArray = new Object[a.length];
-        for(int i = 0; i < a.length - 1; i++) {
-            tempArray[i] = a[i+1];
-        }
-        array = tempArray;
-    }
-
-    private void bumpUpArrayTail(Object[] a, T item) {
-        Object[] tempArray = new Object[a.length];
-        tempArray[tempArray.length-1] = item;
-        for(int i = 0; i < headIndex; i++) {
-            tempArray[i] = a[i];
-        }
-        for(int i = tailIndex; i < a.length - 1; i++) {
-            tempArray[i] = a[i+1];
-        }
-        tailIndex--;
-        array = tempArray;
-    }
-
-    private void bumpDownArrayTail(Object[] a) {
-        Object[] tempArray = new Object[a.length];
-        for(int i = 0; i < headIndex; i++) {
-            tempArray[i] = a[i];
-        }
-
-        for(int tailCounter = tailIndex; tailCounter < a.length - 1; tailCounter++) {
-            tempArray[tailCounter] = a[tailCounter];
-        }
-
-        array = tempArray;
-    }
-
-    public void printItemsIfPrintable() {
-        for (Object item : array) {
-            System.out.println(item);
+    public Object retrieveHead() {
+        if(headIndex == 0 && tailIndex == 0) {
+            System.out.println("No head to retrieve");
+            return null;
+        } else if(headIndex == 0) {
+            return tailArray[0];
+        } else {
+            return headArray[headIndex - 1];
         }
     }
 
-    public static void main(String[] args) {
-        ArrayDeque<Integer> arrayDeque = new ArrayDeque<>();
-        arrayDeque.addHead(0);
-        arrayDeque.addHead(1);
-        arrayDeque.addTail(99);
-        arrayDeque.addTail(50);
-        arrayDeque.addTail(60);
-        arrayDeque.addTail(61);
-        arrayDeque.addTail(62);
-        arrayDeque.addTail(63);
-        arrayDeque.addTail(64);
-        arrayDeque.addTail(65);
-        arrayDeque.addTail(66);
-        arrayDeque.addTail(67);
-        arrayDeque.addTail(68);
-        arrayDeque.addTail(69);
-
-        arrayDeque.printItemsIfPrintable();
+    public Object retrieveTail() {
+        if(tailIndex == 0 && headIndex == 0) {
+            System.out.println("No tail to retrieve");
+            return null;
+        } else if(tailIndex == 0) {
+            return headArray[0];
+        } else {
+            return tailArray[tailIndex - 1];
+        }
     }
+
+    public void printItem(Integer item) {
+        System.out.println(item);
+    }
+
+    private void printHelper() {
+
+        StringBuilder sb = new StringBuilder();
+        int j = headIndex;
+
+        for (int i = 0; i < j + 1; i++) {
+            sb.append(headArray[j - 1]);
+            sb.append(", ");
+
+            if (i == headIndex - 1 && tailArray[0] == null) {
+                break;
+            }
+
+            j--;
+        }
+
+        int k = tailIndex;
+        for (int i = 0; i < k; i++) {
+            sb.append(tailArray[i]);
+
+            if (i != tailIndex - 1) {
+                sb.append(", ");
+            }
+        }
+        System.out.println(sb.toString());
+    }
+
+//    private Object[] tailArrayPrintHelper(Object[] a, int aLength) {
+//        Object[] aTemp = new Object[aLength];
+//        for (int i = 0; i < aLength; i++) {
+//            aTemp[i] = a[i];
+//        }
+//        return aTemp;
+//    }
+
+    public static void main (String[] args) {
+        ArrayDeque<Integer> aD2 = new ArrayDeque<>();
+        aD2.addHead(1);
+        aD2.printItem((Integer) aD2.retrieveHead());
+        aD2.printItem((Integer) aD2.retrieveTail());
+        aD2.addTail(2);
+        aD2.printItem((Integer) aD2.retrieveHead());
+        aD2.printItem((Integer) aD2.retrieveTail());
+        aD2.addTail(3);
+        aD2.printItem((Integer) aD2.retrieveHead());
+        aD2.printItem((Integer) aD2.retrieveTail());
+        aD2.addHead(4);
+        aD2.printItem((Integer) aD2.retrieveHead());
+        aD2.printItem((Integer) aD2.retrieveTail());
+        aD2.printHelper();
+        aD2.popHead();
+        aD2.printItem((Integer) aD2.retrieveHead());
+        aD2.printItem((Integer) aD2.retrieveTail());
+        aD2.popHead();
+        aD2.printItem((Integer) aD2.retrieveHead());
+        aD2.printItem((Integer) aD2.retrieveTail());
+        aD2.popHead();
+        aD2.printItem((Integer) aD2.retrieveHead());
+        aD2.printItem((Integer) aD2.retrieveTail());
+
+    }
+
 
 }
-
-
