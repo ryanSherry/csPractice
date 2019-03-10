@@ -45,7 +45,6 @@ public class ArrayDeque<T> {
     public void addHead(T item) {
         //will only resize if needs to, otherwise assigns current value to self and there is no change
         headArray = checkArrayResize(headArray);
-
         headArray[headIndex] = item;
         headIndex++;
     }
@@ -131,6 +130,47 @@ public class ArrayDeque<T> {
         }
     }
 
+    public Object retrieveAtIndex(int index) {
+        int arrayIndexLength = headIndex + tailIndex - 2;
+
+        if (index < 0 || index > arrayIndexLength) {
+            System.out.println("Array out of bounds");
+            return null;
+        }
+
+        if (tailIndex == 0 && headIndex == 0) {
+            System.out.println("Nothing to retrieve");
+            return null;
+        }
+
+        Object[] tempArray = new Object[arrayIndexLength+2];
+        int j = headIndex;
+        int counter = 0;
+
+        //populate with head array values
+        while (counter < j + 1) {
+            tempArray[counter] = headArray[j - 1];
+            counter++;
+            j--;
+        }
+
+        int i = 0;
+
+        while(counter < arrayIndexLength + 2) {
+            tempArray[counter] = tailArray[i];
+            i++;
+            counter++;
+        }
+
+        System.out.print("items in deque are: ");
+        for (int k = 0; k < tempArray.length; k++) {
+            System.out.print(tempArray[k]);
+        }
+        System.out.println(" ");
+        System.out.println("Returned item is: " + tempArray[index]);
+        return tempArray[index];
+    }
+
     public void printItem(Integer item) {
         System.out.println(item);
     }
@@ -185,15 +225,16 @@ public class ArrayDeque<T> {
         aD2.printItem((Integer) aD2.retrieveHead());
         aD2.printItem((Integer) aD2.retrieveTail());
         aD2.printHelper();
-        aD2.popHead();
-        aD2.printItem((Integer) aD2.retrieveHead());
-        aD2.printItem((Integer) aD2.retrieveTail());
-        aD2.popHead();
-        aD2.printItem((Integer) aD2.retrieveHead());
-        aD2.printItem((Integer) aD2.retrieveTail());
-        aD2.popHead();
-        aD2.printItem((Integer) aD2.retrieveHead());
-        aD2.printItem((Integer) aD2.retrieveTail());
+        aD2.retrieveAtIndex(0);
+//        aD2.popHead();
+//        aD2.printItem((Integer) aD2.retrieveHead());
+//        aD2.printItem((Integer) aD2.retrieveTail());
+//        aD2.popHead();
+//        aD2.printItem((Integer) aD2.retrieveHead());
+//        aD2.printItem((Integer) aD2.retrieveTail());
+//        aD2.popHead();
+//        aD2.printItem((Integer) aD2.retrieveHead());
+//        aD2.printItem((Integer) aD2.retrieveTail());
 
     }
 
