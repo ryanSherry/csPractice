@@ -96,8 +96,13 @@ public class LinkedList<T> {
             System.out.println(itemToPop.data);
         } else {
             itemToPop = tail;
-            tail = previousTail;
-            tail.next = null;
+            if (itemCount == 2) {
+                tail = head;
+                tail.next = null;
+            } else {
+                tail = previousTail;
+                tail.next = null;
+            }
             itemCount--;
 
             if (itemCount < 2) {
