@@ -24,19 +24,14 @@ public class LinkedListDeque<T> {
     }
 
     public void printDeque() {
-        LinkedList.Node tmp = linkedList.retrieveHead();
-        while (tmp != null) {
-            System.out.print(tmp.getData() + ", ");
-            tmp = tmp.next;
-        }
-        System.out.println(" ");
+        linkedList.printLinkedList();
     }
 
     public static void main(String[] args) {
         LinkedListDeque<Integer> linkedListDeque = new LinkedListDeque<>();
         linkedListDeque.addAtHead(1);
         linkedListDeque.addAtHead(2);
-//        linkedListDeque.addAtHead(3);
+        linkedListDeque.addAtHead(3);
         linkedListDeque.printDeque();
         linkedListDeque.popTail();
         linkedListDeque.printDeque();
