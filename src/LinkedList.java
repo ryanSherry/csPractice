@@ -118,6 +118,28 @@ public class LinkedList<T> {
         return head;
     }
 
+    public Node retrieveNodeAtIndex(int index, boolean popNode) {
+        Node nodeToReturn;
+        if (index < 0 || index > itemCount) {
+            System.out.println("This index is out of bounds, no Node to retrieve. Try a number between 0 and " + itemCount);
+            nodeToReturn = null;
+        } else {
+            Node tmp = retrieveHead();
+            Node prevTmp = retrieveHead();
+            for (int i = 0; i < index; i++) {
+                if (i == index) prevTmp = tmp;
+                tmp = tmp.next;
+            }
+            nodeToReturn = tmp;
+
+            if (popNode) {
+                prevTmp.next = tmp.next;
+            }
+        }
+        System.out.println(nodeToReturn.getData());
+        return nodeToReturn;
+    }
+
     public void printLinkedList() {
         Node tmp = head;
         String separator = ", ";
@@ -175,7 +197,9 @@ public class LinkedList<T> {
         linkedList.printNode(linkedList.tail);
         linkedList.printNode(linkedList.previousTail);
         linkedList.printLinkedList();
-        linkedList.popTail();
-        linkedList.printNode(linkedList.previousTail);
+        linkedList.retrieveNodeAtIndex(1,true);
+        linkedList.printLinkedList();
+//        linkedList.popTail();
+//        linkedList.printNode(linkedList.previousTail);
     }
 }
