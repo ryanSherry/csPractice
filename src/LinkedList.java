@@ -13,6 +13,10 @@ public class LinkedList<T> {
             this.data = item;
             this.next = next;
         }
+
+        public T getData() {
+            return this.data;
+        }
     }
 
     public void addHead(T item) {
@@ -25,6 +29,7 @@ public class LinkedList<T> {
             itemCount++;
         } else {
             Node tmp = head;
+            previousTail = head;
             itemToAdd.next = tmp;
             head = itemToAdd;
             itemCount++;
@@ -44,8 +49,8 @@ public class LinkedList<T> {
             tmp.next = itemToAdd;
             itemCount++;
 
-            if (itemCount > 2) {
-                previousTail = tail;
+            if (itemCount > 1) {
+                previousTail = tmp;
             }
 
             tail = tmp.next;
@@ -68,7 +73,7 @@ public class LinkedList<T> {
             head = head.next;
             itemCount--;
 
-            if (itemCount < 3) {
+            if (itemCount < 2) {
                 previousTail = null;
             }
 
@@ -92,14 +97,20 @@ public class LinkedList<T> {
         } else {
             itemToPop = tail;
             tail = previousTail;
+            tail.next = null;
             itemCount--;
-            if (itemCount < 3) {
+
+            if (itemCount < 2) {
                 previousTail = null;
             }
 
             System.out.println(itemToPop.data);
         }
         return itemToPop;
+    }
+
+    public Node retrieveHead() {
+        return head;
     }
 
     public void printLinkedList() {
